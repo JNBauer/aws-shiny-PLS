@@ -1,10 +1,16 @@
 
 
-setwd("..")
 
-source("functions/utils.R")
+
+source("utils.R")
 library(shiny)
 library(chillR)
+
+
+
+# Add directory of static resources to Shiny's web server
+
+
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -21,7 +27,7 @@ ui <- fluidPage(
                 )
                 
     ),
-    plotOutput("plot",height = 720, width = "100%")
+    plotOutput("plot",height = 720, width = "100%"),
 
 )
 
@@ -29,17 +35,8 @@ ui <- fluidPage(
 server = function(input, output) {
   print("Test")
   output$plot <- renderPlot({
-    Kyoto <- readRDS(paste("../data/cluster_input/solo_validation/",input$location,".RDS",sep=""))
-    pheno<-Kyoto[[2]]
-    
-    
-    weather_RDS<-Kyoto[[3]]
-    weather <- read.csv(paste("../data/weather/cleanv2/",input$location,".csv",sep=""))
-    JD_weather<-make_JDay(weather)
-    
-    PLS_results<-PLS_pheno(JD_weather,pheno)
-    
-    plot <- ggplot_PLS(PLS_results)
+    Kyoto <- readRDS(paste0("data/PLS_",input$location,".RDS"))
+    plot <- ggplot_PLS(Kyoto)
     plot
   })
 }
